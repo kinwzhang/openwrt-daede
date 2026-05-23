@@ -18,9 +18,17 @@
 			"path": "daed/config"
 		}
 	},
+	"admin/services/daed/updates": {
+		"title": "Updates",
+		"order": 20,
+		"action": {
+			"type": "view",
+			"path": "daed/updates"
+		}
+	},
 	"admin/services/daed/log": {
 		"title": "Log",
-		"order": 20,
+		"order": 30,
 		"action": {
 			"type": "view",
 			"path": "daed/log"

@@ -8,7 +8,13 @@
 				"/usr/share/v2ray/geosite.dat": [ "read" ],
 				"/sys/kernel/btf/vmlinux": [ "read" ],
 				"/run/netns/daens": [ "read" ],
-				"/etc/init.d/daed status": [ "exec" ]
+				"/tmp/luci-app-daed.geoip.log": [ "read" ],
+				"/tmp/luci-app-daed.geosite.log": [ "read" ],
+				"/tmp/luci-app-daed.pkg-daed.log": [ "read" ],
+				"/tmp/luci-app-daed.pkg-luci-app-daed.log": [ "read" ],
+				"/etc/init.d/daed status": [ "exec" ],
+				"/usr/share/luci-app-daed/pkg-info.sh daed": [ "exec" ],
+				"/usr/share/luci-app-daed/pkg-info.sh luci-app-daed": [ "exec" ]
 			},
 			"ubus": {
 				"service": [ "list" ]
@@ -27,7 +33,9 @@
 				"/sbin/uci commit daed": [ "exec" ],
 				"/sbin/ip netns del daens": [ "exec" ],
 				"/usr/share/luci-app-daed/update-geo.sh geoip": [ "exec" ],
-				"/usr/share/luci-app-daed/update-geo.sh geosite": [ "exec" ]
+				"/usr/share/luci-app-daed/update-geo.sh geosite": [ "exec" ],
+				"/usr/share/luci-app-daed/update-pkg.sh daed": [ "exec" ],
+				"/usr/share/luci-app-daed/update-pkg.sh luci-app-daed": [ "exec" ]
 			},
 			"uci": [ "daed" ]
 		}

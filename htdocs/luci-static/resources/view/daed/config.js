@@ -39,18 +39,6 @@ const CSS = [
 	'.dd-switch:disabled{opacity:.45;cursor:not-allowed}',
 	'.dd-switch-label{font-size:11px;font-weight:600;opacity:.62;letter-spacing:.3px}',
 	'.dd-switch-wrap{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}',
-	'.dd-diag-row{display:grid;grid-template-columns:24px 90px 1fr auto auto;gap:10px;align-items:center;font-size:12px;padding:5px 0;border-top:1px dashed rgba(128,128,128,.18)}',
-	'.dd-diag-row:first-of-type{border-top:0}',
-	'.dd-diag-icon{font-size:14px;text-align:center;line-height:1}',
-	'.dd-diag-ok{color:#3da66a}',
-	'.dd-diag-warn{color:#d39e00}',
-	'.dd-diag-err{color:#d96d6d}',
-	'.dd-diag-name{font-weight:600;opacity:.8}',
-	'.dd-diag-path{opacity:.55;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
-	'.dd-diag-meta{opacity:.7;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;white-space:nowrap}',
-	'.dd-diag-btn{font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid rgba(128,128,128,.35);background:transparent;color:inherit;cursor:pointer}',
-	'.dd-diag-btn:hover{background:rgba(128,128,128,.12)}',
-	'.dd-diag-btn:disabled{opacity:.45;cursor:not-allowed}',
 	'body.dark .dd-card,html[data-theme="dark"] .dd-card,html[data-bs-theme="dark"] .dd-card{border-color:rgba(255,255,255,.08);background:rgba(255,255,255,.02)}'
 ].join('');
 
@@ -63,119 +51,6 @@ function execInit(action) {
 	}).catch(function(e) {
 		ui.addNotification(null, E('p', _('Action "%s" error: %s').format(action, e)), 'danger');
 	});
-}
-
-const DIAG_PATHS = {
-	geoip:   '/usr/share/v2ray/geoip.dat',
-	geosite: '/usr/share/v2ray/geosite.dat',
-	btf:     '/sys/kernel/btf/vmlinux',
-	netns:   '/run/netns/daens'
-};
-
-function fmtBytes(n) {
-	if (!n && n !== 0) return '-';
-	if (n < 1024) return n + ' B';
-	if (n < 1024 * 1024) return (n / 1024).toFixed(1) + ' KB';
-	return (n / 1024 / 1024).toFixed(1) + ' MB';
-}
-
-function fmtMtime(epoch) {
-	if (!epoch) return '';
-	const d = new Date(epoch * 1000);
-	return d.toISOString().slice(0, 10);
-}
-
-function fetchDiagnostics() {
-	const probes = Object.keys(DIAG_PATHS).map(function(key) {
-		return L.resolveDefault(fs.stat(DIAG_PATHS[key]), null).then(function(st) {
-			return { key: key, path: DIAG_PATHS[key], exists: !!st, size: st ? st.size : 0, mtime: st ? st.mtime : 0 };
-		});
-	});
-	return Promise.all(probes);
-}
-
-function cleanNetns() {
-	return fs.exec('/sbin/ip', ['netns', 'del', 'daens']).then(function(res) {
-		if (res.code === 0)
-			ui.addNotification(null, E('p', _('netns daens removed.')), 'info');
-		else
-			ui.addNotification(null, E('p', _('netns daens cleanup: %s').format(res.stderr || res.stdout || ('exit ' + res.code))), 'warning');
-	}).catch(function(e) {
-		ui.addNotification(null, E('p', _('netns daens cleanup failed: %s').format(e)), 'danger');
-	});
-}
-
-function updateGeo(kind) {
-	const label = kind === 'geoip' ? 'GeoIP' : 'GeoSite';
-	return fs.exec('/usr/share/luci-app-daed/update-geo.sh', [kind]).then(function(res) {
-		if (res.code === 0) {
-			ui.addNotification(null, E('p', _('%s download started in the background. The Diagnostics card will refresh when it finishes (~1–3 min).').format(label)), 'info');
-		} else if (res.code === 75) {
-			ui.addNotification(null, E('p', _('%s update already running.').format(label)), 'warning');
-		} else {
-			ui.addNotification(null, E('p', _('%s update failed: %s').format(label, res.stderr || res.stdout || ('exit ' + res.code))), 'danger');
-		}
-	}).catch(function(e) {
-		ui.addNotification(null, E('p', _('%s update error: %s').format(label, e)), 'danger');
-	});
-}
-
-function renderDiagnostics(results) {
-	const map = {};
-	results.forEach(function(r) { map[r.key] = r; });
-
-	const mkRow = function(icon, iconClass, name, path, meta, btn) {
-		return E('div', { 'class': 'dd-diag-row' }, [
-			E('span', { 'class': 'dd-diag-icon ' + iconClass }, icon),
-			E('span', { 'class': 'dd-diag-name' }, name),
-			E('span', { 'class': 'dd-diag-path', 'title': path }, path),
-			E('span', { 'class': 'dd-diag-meta' }, meta || ''),
-			btn || E('span', {}, '')
-		]);
-	};
-
-	const rows = [];
-
-	// GeoIP / GeoSite — must exist and non-empty
-	['geoip', 'geosite'].forEach(function(k) {
-		const r = map[k];
-		const name = k === 'geoip' ? 'GeoIP' : 'GeoSite';
-		const upBtn = E('button', { 'class': 'dd-diag-btn' }, 'Update');
-		upBtn.addEventListener('click', function() {
-			upBtn.disabled = true;
-			upBtn.textContent = '...';
-			updateGeo(k).finally(function() {
-				upBtn.disabled = false;
-				upBtn.textContent = 'Update';
-			});
-		});
-		if (r.exists && r.size > 0)
-			rows.push(mkRow('✓', 'dd-diag-ok', name, r.path, fmtBytes(r.size) + (r.mtime ? ' · ' + fmtMtime(r.mtime) : ''), upBtn));
-		else
-			rows.push(mkRow('✗', 'dd-diag-err', name, r.path, _('missing — click Update to fetch'), upBtn));
-	});
-
-	// BTF — must exist
-	const btf = map.btf;
-	if (btf.exists)
-		rows.push(mkRow('✓', 'dd-diag-ok', 'Kernel BTF', btf.path, fmtBytes(btf.size)));
-	else
-		rows.push(mkRow('✗', 'dd-diag-err', 'Kernel BTF', btf.path, _('not available — eBPF needs CONFIG_DEBUG_INFO_BTF or vmlinux-btf')));
-
-	// netns — should NOT exist (stale netns blocks start)
-	const ns = map.netns;
-	if (ns.exists) {
-		const btn = E('button', { 'class': 'dd-diag-btn' }, 'Clean');
-		btn.addEventListener('click', function() {
-			btn.disabled = true;
-			cleanNetns().finally(function() { btn.disabled = false; });
-		});
-		rows.push(mkRow('⚠', 'dd-diag-warn', 'netns daens', ns.path, _('exists — may block next start'), btn));
-	} else {
-		rows.push(mkRow('✓', 'dd-diag-ok', 'netns daens', ns.path, _('clean')));
-	}
-
-	return rows;
 }
 
 function fetchStatus() {
@@ -293,20 +168,11 @@ return view.extend({
 			statusBody
 		]);
 
-		const diagBody = E('div', { 'id': 'dd-diag-body' }, E('em', {}, _('Probing…')));
-		const diagCard = E('div', { 'class': 'dd-card' }, [
-			E('h4', { 'class': 'dd-card-title' }, 'Diagnostics'),
-			diagBody
-		]);
-
 		const refresh = function() {
-			return Promise.all([ fetchStatus(), fetchDiagnostics() ]).then(function(out) {
-				const state = out[0], diag = out[1];
+			return fetchStatus().then(function(state) {
 				while (statusBody.firstChild) statusBody.removeChild(statusBody.firstChild);
 				renderStatusCard(state, uci.get('daed', 'config', 'listen_addr') || listenAddr)
 					.forEach(function(el) { statusBody.appendChild(el); });
-				while (diagBody.firstChild) diagBody.removeChild(diagBody.firstChild);
-				renderDiagnostics(diag).forEach(function(el) { diagBody.appendChild(el); });
 			});
 		};
 		poll.add(refresh);
@@ -342,7 +208,6 @@ return view.extend({
 			return E('div', { 'class': 'dd-wrap' }, [
 				E('style', {}, CSS),
 				statusCard,
-				diagCard,
 				node
 			]);
 		});
