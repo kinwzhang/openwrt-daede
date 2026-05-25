@@ -68,6 +68,8 @@ const CSS = [
 	'.dd-editor-status.show{opacity:1}',
 	'.dd-editor-status.ok{color:#3da66a}',
 	'.dd-editor-status.err{color:#d96d6d}',
+	'.dd-editor-hint{font-size:11.5px;opacity:.62;line-height:1.5;margin:0 0 8px;padding:7px 10px;border-radius:6px;background:rgba(56,134,161,.06);border-left:3px solid rgba(56,134,161,.5)}',
+	'.dd-editor-hint b{font-weight:600;opacity:.85}',
 	'body.dark .dd-card,html[data-theme="dark"] .dd-card,html[data-bs-theme="dark"] .dd-card{border-color:rgba(255,255,255,.08);background:rgba(255,255,255,.02)}',
 	'body.dark .dd-adv-bar,html[data-theme="dark"] .dd-adv-bar,html[data-bs-theme="dark"] .dd-adv-bar{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.10)}',
 	'body.dark .dd-settings-card .cbi-value-field input,body.dark .dd-settings-card .cbi-value-field select,body.dark .dd-settings-card .cbi-value-field textarea,html[data-theme="dark"] .dd-settings-card .cbi-value-field input,html[data-theme="dark"] .dd-settings-card .cbi-value-field select,html[data-theme="dark"] .dd-settings-card .cbi-value-field textarea,html[data-bs-theme="dark"] .dd-settings-card .cbi-value-field input,html[data-bs-theme="dark"] .dd-settings-card .cbi-value-field select,html[data-bs-theme="dark"] .dd-settings-card .cbi-value-field textarea{border-color:rgba(255,255,255,.18)}'
@@ -446,6 +448,11 @@ function renderDaeEditor() {
 
 	return E('div', { 'class': 'dd-card' }, [
 		E('h4', { 'class': 'dd-card-title' }, _('dae Configuration')),
+		E('div', { 'class': 'dd-editor-hint' }, [
+			E('b', {}, _('Text-only mode.')),
+			' ',
+			_('dae has no built-in WebUI. Edit the config DSL below by hand (subscriptions, nodes, routing, DNS). "Initialize from example" loads the bundled template — replace the placeholder subscription URL with your own before saving. For point-and-click management, switch backend to daed.')
+		]),
 		textarea,
 		E('div', { 'class': 'dd-editor-actions' }, [ save, init, status ])
 	]);

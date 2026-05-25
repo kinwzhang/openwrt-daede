@@ -181,3 +181,9 @@ msgstr "示例已加载"
 
 msgid "Init failed: %s"
 msgstr "初始化失败：%s"
+
+msgid "Text-only mode."
+msgstr "纯文本模式。"
+
+msgid "dae has no built-in WebUI. Edit the config DSL below by hand (subscriptions, nodes, routing, DNS). \"Initialize from example\" loads the bundled template — replace the placeholder subscription URL with your own before saving. For point-and-click management, switch backend to daed."
+msgstr "dae 没有内置 WebUI，下面的 DSL 配置需要手工编辑（订阅、节点、路由、DNS）。「从示例初始化」会载入官方模板 —— 保存前请把占位的订阅链接换成你自己的。想图形化点选管理，请把后端切回 daed。"
