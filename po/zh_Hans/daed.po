@@ -157,3 +157,27 @@ msgstr "dae 设置"
 
 msgid "Log Advanced Settings"
 msgstr "日志高级设置"
+
+msgid "dae config file is empty. Click \"Initialize from example\" to start, or paste your config here."
+msgstr "dae 配置文件为空。点「从示例初始化」开始，或直接在这里粘贴你的配置。"
+
+msgid "Saving…"
+msgstr "保存中…"
+
+msgid "Saved · hot-reloaded"
+msgstr "已保存 · 已热重载"
+
+msgid "Reload failed: %s"
+msgstr "热重载失败：%s"
+
+msgid "Save failed: %s"
+msgstr "保存失败：%s"
+
+msgid "Loading example…"
+msgstr "加载示例中…"
+
+msgid "Example loaded"
+msgstr "示例已加载"
+
+msgid "Init failed: %s"
+msgstr "初始化失败：%s"

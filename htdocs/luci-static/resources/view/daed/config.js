@@ -63,7 +63,11 @@ const CSS = [
 	'.dd-adv-body{margin-top:8px;padding:2px 4px 4px}',
 	'.dd-adv.dd-closed .dd-adv-body{display:none}',
 	'.dd-editor{width:100%;min-height:460px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;font-size:12px;line-height:1.5;box-sizing:border-box;resize:vertical}',
-	'.dd-editor-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}',
+	'.dd-editor-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px}',
+	'.dd-editor-status{margin-left:auto;font-size:11.5px;opacity:0;transition:opacity .25s ease;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}',
+	'.dd-editor-status.show{opacity:1}',
+	'.dd-editor-status.ok{color:#3da66a}',
+	'.dd-editor-status.err{color:#d96d6d}',
 	'body.dark .dd-card,html[data-theme="dark"] .dd-card,html[data-bs-theme="dark"] .dd-card{border-color:rgba(255,255,255,.08);background:rgba(255,255,255,.02)}',
 	'body.dark .dd-adv-bar,html[data-theme="dark"] .dd-adv-bar,html[data-bs-theme="dark"] .dd-adv-bar{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.10)}',
 	'body.dark .dd-settings-card .cbi-value-field input,body.dark .dd-settings-card .cbi-value-field select,body.dark .dd-settings-card .cbi-value-field textarea,html[data-theme="dark"] .dd-settings-card .cbi-value-field input,html[data-theme="dark"] .dd-settings-card .cbi-value-field select,html[data-theme="dark"] .dd-settings-card .cbi-value-field textarea,html[data-bs-theme="dark"] .dd-settings-card .cbi-value-field input,html[data-bs-theme="dark"] .dd-settings-card .cbi-value-field select,html[data-bs-theme="dark"] .dd-settings-card .cbi-value-field textarea{border-color:rgba(255,255,255,.18)}'
@@ -378,39 +382,63 @@ function renderDaeSettings() {
 }
 
 function renderDaeEditor() {
-	const textarea = E('textarea', { 'class': 'dd-editor', 'spellcheck': 'false' }, '');
+	const textarea = E('textarea', {
+		'class': 'dd-editor',
+		'spellcheck': 'false',
+		'placeholder': _('dae config file is empty. Click "Initialize from example" to start, or paste your config here.')
+	}, '');
 	const save = E('button', { 'class': 'cbi-button cbi-button-positive' }, _('Save and Hot Reload'));
 	const init = E('button', { 'class': 'cbi-button cbi-button-action' }, _('Initialize from example'));
+	const status = E('span', { 'class': 'dd-editor-status' }, '');
+
+	let statusTimer = null;
+	function flashStatus(text, kind) {
+		status.textContent = text;
+		status.classList.remove('ok', 'err');
+		if (kind) status.classList.add(kind);
+		status.classList.add('show');
+		if (statusTimer) clearTimeout(statusTimer);
+		statusTimer = setTimeout(function() {
+			status.classList.remove('show');
+		}, 3000);
+	}
 
 	function loadConfig() {
 		return fs.read_direct(backend.BACKENDS.dae.config, 'text').then(function(content) {
 			textarea.value = content || '';
-		}).catch(function(e) {
+		}).catch(function() {
+			/* 文件不存在是正常状态（dae 还没初始化配置）—— 不弹通知，由 placeholder 引导 */
 			textarea.value = '';
-			ui.addNotification(null, E('p', _('dae config file does not exist yet. Use the example as initial content if needed.')), 'warning');
 		});
 	}
 
 	save.addEventListener('click', function(ev) {
 		ev.preventDefault();
 		save.disabled = true;
+		flashStatus(_('Saving…'));
 		fs.write(backend.BACKENDS.dae.config, textarea.value, 384)
 			.then(function() { return fs.exec(backend.BACKENDS.dae.initd, ['hot_reload']); })
-			.then(function(res) { notifyAction('hot_reload', res); })
-			.catch(function(e) { ui.addNotification(null, E('p', _('Failed to save dae config: %s').format(e)), 'danger'); })
+			.then(function(res) {
+				if (res && res.code !== 0)
+					flashStatus(_('Reload failed: %s').format(res.stderr || res.stdout || ('exit ' + res.code)), 'err');
+				else
+					flashStatus(_('Saved · hot-reloaded'), 'ok');
+			})
+			.catch(function(e) { flashStatus(_('Save failed: %s').format(e.message || e), 'err'); })
 			.finally(function() { save.disabled = false; });
 	});
 
 	init.addEventListener('click', function(ev) {
 		ev.preventDefault();
 		init.disabled = true;
+		flashStatus(_('Loading example…'));
 		fs.read_direct(backend.BACKENDS.dae.example, 'text')
 			.then(function(content) {
 				textarea.value = content || '';
 				return fs.write(backend.BACKENDS.dae.config, textarea.value, 384);
 			})
-			.then(function() { ui.addNotification(null, E('p', _('Example configuration copied.')), 'info'); })
-			.catch(function(e) { ui.addNotification(null, E('p', _('Failed to initialize config: %s').format(e)), 'danger'); })
+			.then(function() { flashStatus(_('Example loaded'), 'ok'); })
+			.catch(function(e) { flashStatus(_('Init failed: %s').format(e.message || e), 'err'); })
 			.finally(function() { init.disabled = false; });
 	});
 
@@ -419,7 +447,7 @@ function renderDaeEditor() {
 	return E('div', { 'class': 'dd-card' }, [
 		E('h4', { 'class': 'dd-card-title' }, _('dae Configuration')),
 		textarea,
-		E('div', { 'class': 'dd-editor-actions' }, [ save, init ])
+		E('div', { 'class': 'dd-editor-actions' }, [ save, init, status ])
 	]);
 }
 
