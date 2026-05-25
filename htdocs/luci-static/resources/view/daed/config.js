@@ -10,43 +10,63 @@
 'require view.daed.backend as backend';
 
 const CSS = [
-	'.dd-wrap{padding:6px 0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif}',
-	'.dd-card{border:1px solid rgba(0,0,0,.06);border-radius:10px;padding:14px 16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.03);background:rgba(255,255,255,.02)}',
-	'.dd-card-title{font-size:12px;font-weight:600;opacity:.55;margin:0 0 10px;letter-spacing:.3px;text-transform:uppercase}',
-	'.dd-status-row{display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:10px}',
+	'.dd-wrap{padding:4px 0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif}',
+	'.dd-card{border:1px solid rgba(0,0,0,.06);border-radius:10px;padding:10px 14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.03);background:rgba(255,255,255,.02)}',
+	'.dd-card-title{font-size:11px;font-weight:600;opacity:.55;margin:0 0 8px;letter-spacing:.3px;text-transform:uppercase}',
+	'.dd-status-row{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:0}',
 	'.dd-status-row .dd-grow{flex:1 1 auto}',
-	'.dd-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 12px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.3px;border:1px solid transparent;line-height:1.3}',
+	'.dd-badge{display:inline-flex;align-items:center;gap:5px;padding:2px 10px;border-radius:999px;font-size:10.5px;font-weight:700;letter-spacing:.3px;border:1px solid transparent;line-height:1.3}',
 	'.dd-badge-run{color:#3da66a;border-color:rgba(61,166,106,.5)}',
 	'.dd-badge-stop{color:#d96d6d;border-color:rgba(217,109,109,.55)}',
 	'.dd-badge-dot{width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block}',
-	'.dd-meta{font-size:12px;opacity:.7;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}',
+	'.dd-meta{font-size:11.5px;opacity:.7;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}',
 	'.dd-meta-label{opacity:.55;margin-right:4px}',
-	'.dd-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}',
-	'.dd-actions .cbi-button{font-size:12px;padding:6px 14px;border-radius:6px}',
+	'.dd-actions{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0}',
+	'.dd-actions .cbi-button{font-size:11.5px;padding:4px 12px;border-radius:5px}',
 	'.dd-actions a.cbi-button{display:inline-flex;align-items:center;gap:4px}',
-	'.dd-switch{position:relative;width:46px;height:24px;border:0;border-radius:999px;background:rgba(128,128,128,.28);padding:0;cursor:pointer;transition:background .18s ease,opacity .18s ease;flex-shrink:0}',
-	'.dd-switch .dd-switch-knob{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.96);box-shadow:0 1px 4px rgba(0,0,0,.2);transition:transform .18s ease}',
+	'.dd-switch{position:relative;width:42px;height:22px;border:0;border-radius:999px;background:rgba(128,128,128,.28);padding:0;cursor:pointer;transition:background .18s ease,opacity .18s ease;flex-shrink:0}',
+	'.dd-switch .dd-switch-knob{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.96);box-shadow:0 1px 4px rgba(0,0,0,.2);transition:transform .18s ease}',
 	'.dd-switch.is-on{background:rgba(74,160,101,.65)}',
-	'.dd-switch.is-on .dd-switch-knob{transform:translateX(22px)}',
+	'.dd-switch.is-on .dd-switch-knob{transform:translateX(20px)}',
 	'.dd-switch:disabled{opacity:.45;cursor:not-allowed}',
-	'.dd-switch-label{font-size:11px;font-weight:600;opacity:.62;letter-spacing:.3px}',
-	'.dd-switch-wrap{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}',
-	'.dd-backend-card{padding:12px 16px}',
-	'.dd-backend-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}',
-	'.dd-backend-label{min-width:112px;font-size:13px;font-weight:600;opacity:.72}',
-	'.dd-backend-segment{display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:8px;background:rgba(128,128,128,.10)}',
-	'.dd-backend-btn{display:inline-flex;align-items:center;gap:7px;min-width:86px;height:26px;padding:0 10px;border:0;border-right:0;border-radius:6px;background:transparent;color:inherit;font-size:11px;font-weight:500;opacity:.65;cursor:pointer;transition:background .18s ease,color .18s ease,opacity .18s ease}',
-	'.dd-backend-btn:last-child{border-right:0}',
+	'.dd-switch-label{font-size:10.5px;font-weight:600;opacity:.62;letter-spacing:.3px}',
+	'.dd-switch-wrap{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}',
+	'.dd-backend-card{padding:10px 14px}',
+	'.dd-backend-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}',
+	'.dd-backend-label{min-width:100px;font-size:12px;font-weight:600;opacity:.72}',
+	'.dd-backend-segment{display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:7px;background:rgba(128,128,128,.10)}',
+	'.dd-backend-btn{display:inline-flex;align-items:center;gap:6px;min-width:78px;height:24px;padding:0 10px;border:0;border-radius:5px;background:transparent;color:inherit;font-size:11px;font-weight:500;opacity:.65;cursor:pointer;transition:background .18s ease,color .18s ease,opacity .18s ease}',
 	'.dd-backend-btn:hover{background:rgba(128,128,128,.10)}',
 	'.dd-backend-btn.is-active{background:linear-gradient(#3886a1,#2f7288);color:#fff;opacity:1;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.12)}',
 	'.dd-backend-btn:disabled{opacity:.55;cursor:not-allowed}',
-	'.dd-backend-state{font-size:11px;font-weight:500;opacity:.70;margin-left:2px}',
+	'.dd-backend-state{font-size:10.5px;font-weight:500;opacity:.70;margin-left:2px}',
 	'.dd-backend-btn.is-active .dd-backend-state{opacity:.85}',
-	'.dd-backend-help{margin:8px 0 0 124px;font-size:12px;line-height:1.45;opacity:.66}',
+	'.dd-backend-help{margin:6px 0 0 110px;font-size:11.5px;line-height:1.45;opacity:.66}',
 	'@media (max-width:640px){.dd-backend-label{min-width:0;width:100%}.dd-backend-segment{width:100%}.dd-backend-btn{flex:1;min-width:0}.dd-backend-help{margin-left:0}}',
+	/* daed/dae settings card —— LuCI form.Map 字体/边框对齐 dd 卡片体系 */
+	'.dd-settings-card{padding:10px 14px}',
+	'.dd-settings-card>h2,.dd-settings-card .cbi-map>h2,.dd-settings-card .cbi-section>h3{display:none}',
+	'.dd-settings-card .cbi-map>.cbi-map-descr,.dd-settings-card .cbi-section-descr{font-size:11.5px;opacity:.62;margin:0 0 8px;line-height:1.45}',
+	'.dd-settings-descr{font-size:11.5px;opacity:.62;margin:0 0 8px;line-height:1.45}',
+	'.dd-settings-card .cbi-section{margin:0;padding:0;background:transparent;border:0;box-shadow:none}',
+	'.dd-settings-card .cbi-value{padding:6px 0;border:0;min-height:0}',
+	'.dd-settings-card .cbi-value-title{font-size:12.5px !important;font-weight:500;opacity:.85;padding:6px 12px 6px 0;min-width:140px}',
+	'.dd-settings-card .cbi-value-field input,.dd-settings-card .cbi-value-field select,.dd-settings-card .cbi-value-field textarea{font-size:12.5px !important;padding:5px 8px;border-radius:5px;border:1px solid rgba(128,128,128,.28);background:transparent;color:inherit}',
+	'.dd-settings-card .cbi-value-field input:focus,.dd-settings-card .cbi-value-field select:focus,.dd-settings-card .cbi-value-field textarea:focus{border-color:rgba(56,134,161,.7);outline:0;box-shadow:0 0 0 2px rgba(56,134,161,.15)}',
+	'.dd-settings-card .cbi-value-description,.dd-settings-card .cbi-value-helptext{font-size:11.5px !important;opacity:.6;line-height:1.45;padding-top:3px}',
+	/* 手风琴折叠组 —— 视觉与 clashoo cl-component-adv 一致 */
+	'.dd-adv{margin-top:10px}',
+	'.dd-adv-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;cursor:pointer;user-select:none;font-size:12px;font-weight:600;background:rgba(128,128,128,.06);border:1px solid rgba(128,128,128,.16);border-radius:7px;color:inherit;opacity:.85}',
+	'.dd-adv-bar:hover{background:rgba(56,134,161,.08);opacity:1}',
+	'.dd-adv-chevron{font-size:14px;font-weight:700;opacity:.55;transition:transform .2s}',
+	'.dd-adv:not(.dd-closed) .dd-adv-chevron{transform:rotate(90deg)}',
+	'.dd-adv-body{margin-top:8px;padding:2px 4px 4px}',
+	'.dd-adv.dd-closed .dd-adv-body{display:none}',
 	'.dd-editor{width:100%;min-height:460px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;font-size:12px;line-height:1.5;box-sizing:border-box;resize:vertical}',
 	'.dd-editor-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}',
-	'body.dark .dd-card,html[data-theme="dark"] .dd-card,html[data-bs-theme="dark"] .dd-card{border-color:rgba(255,255,255,.08);background:rgba(255,255,255,.02)}'
+	'body.dark .dd-card,html[data-theme="dark"] .dd-card,html[data-bs-theme="dark"] .dd-card{border-color:rgba(255,255,255,.08);background:rgba(255,255,255,.02)}',
+	'body.dark .dd-adv-bar,html[data-theme="dark"] .dd-adv-bar,html[data-bs-theme="dark"] .dd-adv-bar{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.10)}',
+	'body.dark .dd-settings-card .cbi-value-field input,body.dark .dd-settings-card .cbi-value-field select,body.dark .dd-settings-card .cbi-value-field textarea,html[data-theme="dark"] .dd-settings-card .cbi-value-field input,html[data-theme="dark"] .dd-settings-card .cbi-value-field select,html[data-theme="dark"] .dd-settings-card .cbi-value-field textarea,html[data-bs-theme="dark"] .dd-settings-card .cbi-value-field input,html[data-bs-theme="dark"] .dd-settings-card .cbi-value-field select,html[data-bs-theme="dark"] .dd-settings-card .cbi-value-field textarea{border-color:rgba(255,255,255,.18)}'
 ].join('');
 
 function notifyAction(action, res) {
@@ -263,13 +283,42 @@ function renderStatusCard(ctx, listenAddr) {
 	return card;
 }
 
+function wrapSettingsCard(title, descr, mapPromise, advTitle, advFields) {
+	return mapPromise.then(function(node) {
+		const advBody = E('div', { 'class': 'dd-adv-body' });
+		const advWrap = E('div', { 'class': 'dd-adv dd-closed' }, [
+			E('div', { 'class': 'dd-adv-bar' }, [
+				E('span', {}, advTitle),
+				E('span', { 'class': 'dd-adv-chevron' }, '›')
+			]),
+			advBody
+		]);
+		advWrap.firstChild.addEventListener('click', function() {
+			advWrap.classList.toggle('dd-closed');
+		});
+
+		(advFields || []).forEach(function(name) {
+			const row = node.querySelector('[data-name="' + name + '"]');
+			if (row) advBody.appendChild(row);
+		});
+
+		const host = node.querySelector('.cbi-section') || node;
+		if (advBody.firstChild) host.appendChild(advWrap);
+
+		const children = [ E('h4', { 'class': 'dd-card-title' }, title) ];
+		if (descr) children.push(E('div', { 'class': 'dd-settings-descr' }, descr));
+		children.push(node);
+		return E('div', { 'class': 'dd-card dd-settings-card' }, children);
+	});
+}
+
 function renderDaedSettings() {
 	let m, s, o;
-	m = new form.Map('daed', _('daed'),
-		_('A modern dashboard for dae. Subscriptions, nodes, routing and DNS are managed in the daed WebUI.'));
+	m = new form.Map('daed', null, null);
 
 	s = m.section(form.NamedSection, 'config', 'daed');
 	s.addremove = false;
+	s.anonymous = true;
 
 	o = s.option(form.Value, 'listen_addr', _('Listen Address'),
 		_('Host:port that the daed WebUI and GraphQL API listen on.'));
@@ -287,15 +336,22 @@ function renderDaedSettings() {
 	o.datatype = 'uinteger';
 	o.default = '1';
 
-	return m.render();
+	return wrapSettingsCard(
+		_('daed Settings'),
+		_('A modern dashboard for dae. Subscriptions, nodes, routing and DNS are managed in the daed WebUI.'),
+		m.render(),
+		_('Log Advanced Settings'),
+		['log_maxsize', 'log_maxbackups']
+	);
 }
 
 function renderDaeSettings() {
 	let m, s, o;
-	m = new form.Map('dae', _('dae'), _('eBPF-based Linux high-performance transparent proxy solution.'));
+	m = new form.Map('dae', null, null);
 
 	s = m.section(form.NamedSection, 'config', 'dae');
 	s.addremove = false;
+	s.anonymous = true;
 
 	o = s.option(form.Value, 'config_file', _('Configuration File'));
 	o.default = '/etc/dae/config.dae';
@@ -312,7 +368,13 @@ function renderDaeSettings() {
 	o.datatype = 'uinteger';
 	o.default = '1';
 
-	return m.render();
+	return wrapSettingsCard(
+		_('dae Settings'),
+		_('eBPF-based Linux high-performance transparent proxy solution.'),
+		m.render(),
+		_('Log Advanced Settings'),
+		['log_maxsize', 'log_maxbackups']
+	);
 }
 
 function renderDaeEditor() {

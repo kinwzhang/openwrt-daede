@@ -148,3 +148,12 @@ msgstr "确定要清空路由器上的 %s 日志吗？此操作不可恢复。"
 
 msgid "Unavailable"
 msgstr "不可用"
+
+msgid "daed Settings"
+msgstr "daed 设置"
+
+msgid "dae Settings"
+msgstr "dae 设置"
+
+msgid "Log Advanced Settings"
+msgstr "日志高级设置"
