@@ -616,3 +616,14 @@ msgstr "DNS"
 
 msgid "dae config file is empty. Click \"Initialize from example\" to start, or paste your config here."
 msgstr "dae 配置文件为空。点击「从示例初始化」开始，或直接在此粘贴你的配置。"
+
+# ---- log.js: filter dropdown ----
+msgid "All"
+msgstr "全部"
+
+msgid "Node Status"
+msgstr "节点状态"
+
+msgid "Proxy Traffic"
+msgstr "代理流量"
+
