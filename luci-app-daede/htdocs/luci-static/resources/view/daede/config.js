@@ -682,13 +682,15 @@ function renderDaeForms(ctx) {
 	o.default = '1';
 	o.editable = true;
 
-	/* Subscription tags for group filter dropdowns */
+	/* Subscription / manual-node tags for the group filter dropdowns */
 	const subTags = (uci.sections('dae', 'subscription') || [])
+		.map(function(x) { return x.tag; }).filter(function(x) { return !!x; });
+	const nodeTags = (uci.sections('dae', 'node') || [])
 		.map(function(x) { return x.tag; }).filter(function(x) { return !!x; });
 
 	/* Groups (outbound) */
 	s = m.section(form.TypedSection, 'group', _('Groups'),
-		_('Outbound groups. Leave filters empty to use all nodes. Set the route fallback to one of these.'));
+		_('Outbound groups. Leave both filters empty to use all nodes. Set the route fallback to one of these.'));
 	s.addremove = true;
 	s.anonymous = true;
 	o = s.option(form.Value, 'name', _('Name'));
@@ -702,10 +704,11 @@ function renderDaeForms(ctx) {
 	o.value('fixed(0)', _('Fixed (first node)'));
 	o.default = 'min_moving_avg';
 	o = s.option(form.DynamicList, 'filter_sub', _('Source subscriptions'),
-		_('Only use nodes from these subscriptions (empty = all).'));
+		_('Include nodes from these subscriptions.'));
 	subTags.forEach(function(t) { o.value(t, t); });
 	o = s.option(form.DynamicList, 'filter_node', _('Match node name'),
-		_('Keep nodes whose name matches — one keyword per row, or a regex. Empty = all.'));
+		_('Also include nodes by name — pick a manual node, or type a keyword/regex. Combined with subscriptions as OR.'));
+	nodeTags.forEach(function(t) { o.value(t, t); });
 	o.placeholder = '香港|台湾';
 
 	/* Routing presets */
