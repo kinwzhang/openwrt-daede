@@ -649,27 +649,38 @@ function renderDaeForms(ctx) {
 			'disabled': fetchable ? null : '',
 			'title': fetchable ? '' : _('Fixed link — nothing to fetch.')
 		}, _('Update'));
+		const upMsg = E('span', { 'class': 'dd-meta', 'style': 'margin-left:8px;display:none' }, '');
+		function setUpMsg(text, kind) {
+			upMsg.textContent = text;
+			upMsg.style.display = '';
+			upMsg.style.color = (kind === 'err') ? 'var(--error-color, #d33)' : (kind === 'ok') ? 'var(--success-color, #2a8)' : '';
+			if (kind !== 'err')
+				setTimeout(function() { if (upMsg.textContent === text) upMsg.style.display = 'none'; }, 5000);
+		}
 		if (fetchable) {
 			btn.addEventListener('click', function(ev) {
 				ev.preventDefault();
 				btn.disabled = true;
+				setUpMsg(_('Updating…'));
 				backend.detectRunning().then(function(r) {
 					if (!r || !r.dae)
-						return ui.addNotification(null, E('p', _('dae is stopped; it fetches subscriptions on start.')), 'warning');
+						return setUpMsg(_('dae is stopped; it fetches subscriptions on start.'), 'warn');
 					return fs.exec(backend.BACKENDS.dae.initd, ['hot_reload']).then(function(res) {
 						if (res && res.code !== 0)
-							ui.addNotification(null, E('p', _('Update failed: %s').format(res.stderr || res.stdout || ('exit ' + res.code))), 'danger');
+							setUpMsg(_('Update failed: %s').format(res.stderr || res.stdout || ('exit ' + res.code)), 'err');
 						else
-							ui.addNotification(null, E('p', _('Subscriptions updated (dae reloaded)')), 'info');
+							setUpMsg(_('Subscriptions updated (dae reloaded)'), 'ok');
 					});
 				}).catch(function(e) {
-					ui.addNotification(null, E('p', _('Update failed: %s').format(e.message || e)), 'danger');
+					setUpMsg(_('Update failed: %s').format(e.message || e), 'err');
 				}).finally(function() { btn.disabled = false; });
 			});
 		}
 		const firstBtn = cell.querySelector('button, a.cbi-button');
 		if (firstBtn && firstBtn.parentNode) firstBtn.parentNode.insertBefore(btn, firstBtn);
 		else cell.appendChild(btn);
+		if (btn.parentNode) btn.parentNode.insertBefore(upMsg, btn.nextSibling);
+		else cell.appendChild(upMsg);
 		return cell;
 	};
 
