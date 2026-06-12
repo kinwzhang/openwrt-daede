@@ -460,3 +460,6 @@ msgstr " 都是 dae 官方模板留的假地址，不是真订阅。把其中任
 
 msgid "Manual nodes"
 msgstr "手动添加节点"
+
+msgid "Update all subscriptions"
+msgstr "更新全部订阅"

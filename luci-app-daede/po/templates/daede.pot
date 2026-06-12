@@ -380,3 +380,7 @@ msgstr ""
 #: dae.js
 msgid "Manual nodes"
 msgstr ""
+
+#: dae.js
+msgid "Update all subscriptions"
+msgstr ""
