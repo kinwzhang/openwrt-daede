@@ -384,3 +384,7 @@ msgstr ""
 #: dae.js
 msgid "Update all subscriptions"
 msgstr ""
+
+#: dae.js
+msgid "Advanced settings"
+msgstr ""

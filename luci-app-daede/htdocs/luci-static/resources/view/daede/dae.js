@@ -365,6 +365,28 @@ function renderDaeForms(ctx) {
 		/* beginner default: only Subscriptions starts open; nodes/groups/routing/dns/logging collapse */
 		accordionizeSections(mapNode, [ _('Subscriptions') ]);
 
+		/* fold groups / routing / dns / logging under one "Advanced settings"
+		   collapsible so the everyday view is just subscriptions + nodes */
+		const advTitles = [ _('Groups'), _('Routing'), _('DNS'), _('Logging') ];
+		const advWraps = [];
+		mapNode.querySelectorAll('.dd-adv').forEach(function(w) {
+			const t = w.querySelector('.dd-adv-bar span');
+			if (t && advTitles.indexOf(t.textContent.trim()) >= 0) advWraps.push(w);
+		});
+		if (advWraps.length) {
+			const outerBody = E('div', { 'class': 'dd-adv-body' });
+			const outer = E('div', { 'class': 'dd-adv dd-closed' }, [
+				E('div', { 'class': 'dd-adv-bar' }, [
+					E('span', {}, _('Advanced settings')),
+					E('span', { 'class': 'dd-adv-chevron' }, '›')
+				]),
+				outerBody
+			]);
+			outer.firstChild.addEventListener('click', function() { outer.classList.toggle('dd-closed'); });
+			advWraps[0].parentNode.insertBefore(outer, advWraps[0]);
+			advWraps.forEach(function(w) { outerBody.appendChild(w); });
+		}
+
 		const cardChildren = [
 			E('h4', { 'class': 'dd-card-title' }, _('dae Configuration')),
 			E('div', { 'class': 'dd-settings-descr' },

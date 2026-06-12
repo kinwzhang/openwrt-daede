@@ -463,3 +463,6 @@ msgstr "手动添加节点"
 
 msgid "Update all subscriptions"
 msgstr "更新全部订阅"
+
+msgid "Advanced settings"
+msgstr "高级设置"
