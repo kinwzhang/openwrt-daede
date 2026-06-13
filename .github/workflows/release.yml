@@ -348,17 +348,17 @@ jobs:
       # download can never read the B2 keys. Pinned version + checksum verify.
       - name: Install rclone (pinned)
         env:
-          RCLONE_VERSION: "1.69.1"
+          RCLONE_VER: "1.69.1"
         run: |
           set -eu
-          zip="rclone-v${RCLONE_VERSION}-linux-amd64.zip"
-          base="https://downloads.rclone.org/v${RCLONE_VERSION}"
+          zip="rclone-v${RCLONE_VER}-linux-amd64.zip"
+          base="https://downloads.rclone.org/v${RCLONE_VER}"
           curl -fsSL -o "$zip" "${base}/${zip}"
           # Verify against the checksum published in the pinned release's SHA256SUMS.
           curl -fsSL -o SHA256SUMS "${base}/SHA256SUMS"
           grep " ${zip}$" SHA256SUMS | sha256sum -c -
           unzip -q "$zip"
-          sudo install -m 0755 "rclone-v${RCLONE_VERSION}-linux-amd64/rclone" /usr/local/bin/rclone
+          sudo install -m 0755 "rclone-v${RCLONE_VER}-linux-amd64/rclone" /usr/local/bin/rclone
           rclone version
 
       - name: Upload to Backblaze B2
