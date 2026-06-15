@@ -93,8 +93,14 @@ jobs:
         run: |
           gh release view daed-src --repo "${{ github.repository }}" >/dev/null 2>&1 || \
             gh release create daed-src --repo "${{ github.repository }}" \
-              --title "daed pinned source" --notes "Auto-assembled daed source tarballs. Do not delete." --latest=false
+              --title "daed pinned source" --notes "Auto-assembled daed source tarballs (newest 3 kept)." --latest=false
           gh release upload daed-src "$TARBALL" --repo "${{ github.repository }}" --clobber
+          # bound growth: keep only the newest 3 tarballs (never the release/tag)
+          gh release view daed-src --repo "${{ github.repository }}" --json assets \
+            --jq '.assets | sort_by(.createdAt) | reverse | .[3:] | .[].name' \
+            | while read -r old; do
+                [ -n "$old" ] && gh release delete-asset daed-src "$old" --repo "${{ github.repository }}" -y
+              done
 
       - name: Write PKG_HASH into Makefile and push
         env:
